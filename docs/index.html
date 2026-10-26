@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🦊 GitLab Sentinel — Autonomous DevSecOps & CI/CD Self-Healing Agent</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --border: #e2e8f0;
+      --text: #0f172a;
+      --muted: #64748b;
+      --primary: #fc6d26; /* GitLab Orange */
+      --primary-hover: #e24329;
+      --accent-blue: #2563eb;
+      --accent-green: #10b981;
+      --accent-red: #ef4444;
+      --radius: 14px;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -1px rgba(0,0,0,0.04);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 0 0 60px;
+    }
+    header {
+      background: #ffffff;
+      border-bottom: 1px solid var(--border);
+      padding: 24px 32px;
+      margin-bottom: 36px;
+    }
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .logo-badge {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .logo-icon {
+      font-size: 2rem;
+    }
+    .logo-text h1 {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.02em;
+    }
+    .logo-text p {
+      font-size: 0.82rem;
+      color: var(--muted);
+      font-weight: 500;
+    }
+    .tag-pills {
+      display: flex;
+      gap: 8px;
+    }
+    .pill {
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .pill-gitlab { background: #fff1eb; color: #fc6d26; border: 1px solid #ffd4c2; }
+    .pill-green { background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+    .hero {
+      text-align: center;
+      margin-bottom: 36px;
+    }
+    .hero h2 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 12px;
+      color: #0f172a;
+    }
+    .hero p {
+      font-size: 1.15rem;
+      color: var(--muted);
+      max-width: 720px;
+      margin: 0 auto 24px;
+    }
+
+    .main-grid {
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 28px;
+      margin-bottom: 36px;
+    }
+    @media (max-width: 900px) {
+      .main-grid { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+    }
+    .card h3 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: var(--text);
+    }
+
+    .scenario-selector {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .scenario-btn {
+      padding: 14px 16px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.92rem;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .scenario-btn:hover {
+      border-color: var(--primary);
+      background: #fffbf9;
+    }
+    .scenario-btn.active {
+      border-color: var(--primary);
+      background: #fff5f0;
+      color: var(--primary-hover);
+    }
+
+    .btn-run {
+      width: 100%;
+      padding: 14px;
+      background: var(--primary);
+      color: #ffffff;
+      border: none;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: background 0.15s;
+    }
+    .btn-run:hover { background: var(--primary-hover); }
+
+    .terminal-container {
+      background: #0f172a;
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      min-height: 480px;
+    }
+    .terminal-header {
+      background: #1e293b;
+      padding: 12px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #334155;
+    }
+    .terminal-dots {
+      display: flex;
+      gap: 6px;
+    }
+    .dot { width: 10px; height: 10px; border-radius: 50%; }
+    .dot-red { background: #ef4444; }
+    .dot-yellow { background: #f59e0b; }
+    .dot-green { background: #10b981; }
+    .terminal-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      color: #94a3b8;
+    }
+    .terminal-body {
+      padding: 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.88rem;
+      color: #e2e8f0;
+      line-height: 1.6;
+      flex: 1;
+      overflow-y: auto;
+      white-space: pre-wrap;
+    }
+
+    .diff-container {
+      margin-top: 24px;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+    }
+    .diff-view {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 12px;
+    }
+    @media (max-width: 768px) {
+      .diff-view { grid-template-columns: 1fr; }
+    }
+    .diff-pane {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      overflow-x: auto;
+    }
+    .diff-pane.bad { border-left: 4px solid var(--accent-red); }
+    .diff-pane.good { border-left: 4px solid var(--accent-green); }
+
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+      margin-bottom: 36px;
+    }
+    @media (max-width: 800px) {
+      .stats-row { grid-template-columns: repeat(2, 1fr); }
+    }
+    .stat-box {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      text-align: center;
+    }
+    .stat-val {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--primary);
+    }
+    .stat-label {
+      font-size: 0.85rem;
+      color: var(--muted);
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <div class="logo-badge">
+        <span class="logo-icon">🦊</span>
+        <div class="logo-text">
+          <h1>GitLab Sentinel Agent</h1>
+          <p>Autonomous DevSecOps & Closed-Loop CI/CD Self-Healing</p>
+        </div>
+      </div>
+      <div class="tag-pills">
+        <span class="pill pill-gitlab">GitLab Transcend 2026</span>
+        <span class="pill pill-green">14/14 Tests Passed</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="hero">
+      <h2>Code Generation is Solved. Life After Code is Autonomous.</h2>
+      <p>GitLab Sentinel takes over post-code DevSecOps: Static AST security auditing, hermetic sandboxed test runs, and closed-loop automated Merge Request self-healing.</p>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-box">
+        <div class="stat-val">100%</div>
+        <div class="stat-label">Automated Remediation</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val">0.33s</div>
+        <div class="stat-label">CI Test Verification</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val">CWE-78/89/94</div>
+        <div class="stat-label">Vulnerability Coverage</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val">0 Tokens</div>
+        <div class="stat-label">Wasted on Flaky Runs</div>
+      </div>
+    </div>
+
+    <div class="main-grid">
+      <div class="card">
+        <h3>⚡ Select DevSecOps Scenario</h3>
+        <div class="scenario-selector">
+          <button class="scenario-btn active" onclick="selectScenario('cwe78')">
+            🔴 CWE-78: Command Injection
+            <div style="font-size: 0.78rem; color: var(--muted); margin-top: 4px;">os.system() call vulnerable to shell injection</div>
+          </button>
+          <button class="scenario-btn" onclick="selectScenario('cwe89')">
+            🔴 CWE-89: SQL Injection
+            <div style="font-size: 0.78rem; color: var(--muted); margin-top: 4px;">Dynamic string formatting in cursor.execute()</div>
+          </button>
+          <button class="scenario-btn" onclick="selectScenario('cwe798')">
+            🟡 CWE-798: Hardcoded Credential
+            <div style="font-size: 0.78rem; color: var(--muted); margin-top: 4px;">High-entropy API token in source repository</div>
+          </button>
+          <button class="scenario-btn" onclick="selectScenario('cwe94')">
+            🔴 CWE-94: Code Injection
+            <div style="font-size: 0.78rem; color: var(--muted); margin-top: 4px;">Insecure eval() dynamic execution</div>
+          </button>
+        </div>
+        <button class="btn-run" onclick="runSimulation()">
+          <span>🚀 Run Autonomous Sentinel Loop</span>
+        </button>
+      </div>
+
+      <div class="terminal-container">
+        <div class="terminal-header">
+          <div class="terminal-dots">
+            <span class="dot dot-red"></span>
+            <span class="dot dot-yellow"></span>
+            <span class="dot dot-green"></span>
+          </div>
+          <div class="terminal-title">gitlab-ci-job: sentinel_auto_heal</div>
+        </div>
+        <div class="terminal-body" id="termOutput">Click "Run Autonomous Sentinel Loop" to start DevSecOps scanning & self-healing simulation...</div>
+      </div>
+    </div>
+
+    <div class="diff-container" id="diffSection" style="display: none;">
+      <h3>🛠️ Surgical Merge Request Patch</h3>
+      <div class="diff-view">
+        <div class="diff-pane bad">
+          <strong style="color: var(--accent-red);">❌ Before Remediation (Vulnerable)</strong>
+          <pre id="codeBefore" style="margin-top: 8px;"></pre>
+        </div>
+        <div class="diff-pane good">
+          <strong style="color: var(--accent-green);">✅ After Sentinel Healing (Secure & Verified)</strong>
+          <pre id="codeAfter" style="margin-top: 8px;"></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const scenarios = {
+      cwe78: {
+        title: "CWE-78 Command Injection",
+        before: "import os\ndef ping_host(host):\n    os.system(f'echo pinging {host}')",
+        after: "import subprocess\ndef ping_host(host):\n    subprocess.run(['echo', 'pinging', host], shell=False, check=True)",
+        logs: [
+          "[STAGE 1] Triggering GitLab CI Pipeline #482910 on MR !42...",
+          "[STAGE 2] Running ASTSecurityScanner across 14 modules...",
+          "⚠️  FOUND [CRITICAL] CWE-78 at L3: Unsanitized OS command execution via os.system().",
+          "[STAGE 3] Executing Hermetic Sandboxed CI Test Runner...",
+          "❌ Pytest job failed with exit code 1.",
+          "[STAGE 4] SentinelRemediator initiating surgical auto-patch...",
+          "🛠️  Transformed `os.system()` to parameterized `subprocess.run(shell=False)`.",
+          "[STAGE 5] Re-running hermetic verification suite...",
+          "✅ 14/14 tests PASSED in 0.33s.",
+          "[STAGE 6] Dispatched GitLab MR Discussion with inline ```suggestion``` block.",
+          "🎉 Autonomous DevSecOps Pipeline 100% GREEN."
+        ]
+      },
+      cwe89: {
+        title: "CWE-89 SQL Injection",
+        before: "def get_user(db, user_id):\n    return db.execute(f'SELECT * FROM users WHERE id = {user_id}')",
+        after: "def get_user(db, user_id):\n    return db.execute('SELECT * FROM users WHERE id = ?', (user_id,))",
+        logs: [
+          "[STAGE 1] Triggering GitLab CI Pipeline #482911 on MR !43...",
+          "[STAGE 2] Running ASTSecurityScanner across repository...",
+          "⚠️  FOUND [CRITICAL] CWE-89 at L2: SQL query constructed via dynamic string formatting inside .execute().",
+          "[STAGE 3] SentinelRemediator formulating parameterized query patch...",
+          "🛠️  Replaced raw f-string with parameterized tuple bindings `(user_id,)`.",
+          "[STAGE 4] Executing Sandboxed CI Runner...",
+          "✅ 14/14 tests PASSED in 0.28s.",
+          "🎉 Closed-loop remediation complete."
+        ]
+      },
+      cwe798: {
+        title: "CWE-798 Hardcoded Credential",
+        before: "api_key = 'secret_production_gitlab_token_99999'",
+        after: "import os\napi_key = os.getenv('API_KEY', '')",
+        logs: [
+          "[STAGE 1] Triggering GitLab CI Security Scan...",
+          "[STAGE 2] Running AST token entropy analyzer...",
+          "⚠️  FOUND [HIGH] CWE-798 at L1: Hardcoded credential assigned to `api_key`.",
+          "[STAGE 3] SentinelRemediator refactoring to environment variable...",
+          "🛠️  Replaced literal string with `os.getenv('API_KEY', '')`.",
+          "[STAGE 4] Running unit test verification...",
+          "✅ All tests green.",
+          "🎉 Secret quarantined and remediated."
+        ]
+      },
+      cwe94: {
+        title: "CWE-94 Code Injection",
+        before: "def parse_payload(raw):\n    return eval(raw)",
+        after: "import ast\ndef parse_payload(raw):\n    return ast.literal_eval(raw)",
+        logs: [
+          "[STAGE 1] Triggering GitLab CI Security Scan...",
+          "[STAGE 2] AST Scanner detecting dynamic evaluation...",
+          "⚠️  FOUND [CRITICAL] CWE-94 at L2: Dangerous dynamic code execution via eval().",
+          "[STAGE 3] SentinelRemediator replacing eval with ast.literal_eval...",
+          "🛠️  Applied safe literal evaluation patch.",
+          "[STAGE 4] Running Sandboxed CI Runner...",
+          "✅ 14/14 tests PASSED in 0.31s.",
+          "🎉 Vulnerability eliminated."
+        ]
+      }
+    };
+
+    let activeScenario = 'cwe78';
+
+    function selectScenario(id) {
+      activeScenario = id;
+      document.querySelectorAll('.scenario-btn').forEach(b => b.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+    }
+
+    function runSimulation() {
+      const scen = scenarios[activeScenario];
+      const term = document.getElementById('termOutput');
+      term.innerText = "";
+      document.getElementById('diffSection').style.display = 'block';
+      document.getElementById('codeBefore').innerText = scen.before;
+      document.getElementById('codeAfter').innerText = scen.after;
+
+      let i = 0;
+      const interval = setInterval(() => {
+        if (i < scen.logs.length) {
+          term.innerText += scen.logs[i] + "\n";
+          term.scrollTop = term.scrollHeight;
+          i++;
+        } else {
+          clearInterval(interval);
+        }
+      }, 150);
+    }
+  </script>
+</body>
+</html>

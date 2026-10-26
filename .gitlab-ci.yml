@@ -1,0 +1,40 @@
+image: python:3.11-slim
+
+stages:
+  - test
+  - security_scan
+  - auto_remediation
+
+variables:
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+
+cache:
+  paths:
+    - .cache/pip
+    - venv/
+
+before_script:
+  - python --version
+  - pip install pytest requests
+
+unit_tests:
+  stage: test
+  script:
+    - PYTHONPATH=. python -m pytest tests/ -v --junitxml=report.xml
+  artifacts:
+    when: always
+    reports:
+      junit: report.xml
+
+sentinel_ast_scan:
+  stage: security_scan
+  script:
+    - PYTHONPATH=. python -m gitlab_sentinel.cli scan gitlab_sentinel/
+  allow_failure: false
+
+sentinel_auto_heal:
+  stage: auto_remediation
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+  script:
+    - PYTHONPATH=. python -m gitlab_sentinel.cli heal examples/vulnerable_app/
