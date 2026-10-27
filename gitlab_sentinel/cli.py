@@ -20,7 +20,14 @@ def main():
     heal_p = subparsers.add_parser("heal", help="Autonomously remediate security and CI failures")
     heal_p.add_argument("path", nargs="?", default=".", help="Target project path")
 
+    green_p = subparsers.add_parser("greenops", help="Calculate CI compute waste & carbon savings")
+    green_p.add_argument("--files", nargs="*", default=["README.md"], help="List of changed files")
+    green_p.add_argument("--cancelled", type=int, default=2, help="Number of redundant pipelines cancelled")
+
+    mcp_p = subparsers.add_parser("mcp", help="Run Model Context Protocol server for GitLab Duo")
+
     args = parser.parse_args()
+
     if not args.command:
         parser.print_help()
         sys.exit(0)
@@ -33,7 +40,8 @@ def main():
     runner = SandboxedCIRunner()
     remediator = SentinelRemediator()
 
-    target_path = os.path.abspath(args.path)
+    target_path = os.path.abspath(getattr(args, "path", "."))
+
 
     if args.command == "scan":
         print(f"🔍 Scanning target: {target_path}...\n")
@@ -91,6 +99,29 @@ def main():
         print("Re-running verification tests...")
         res = runner.run_tests(cwd=target_path)
         print(f"Verification Result: {'✅ PASSED' if res.success else '❌ FAILED'}")
+
+    elif args.command == "greenops":
+        from .greenops import GreenOpsOptimizer
+        optimizer = GreenOpsOptimizer()
+        res = optimizer.evaluate_merge_request_pipeline(args.files, active_pipeline_queue_len=args.cancelled + 1)
+        savings = res["savings"]
+        print(f"🌱 GitLab Sentinel GreenOps Optimization Report:")
+        print(f"  • Recommended Action: {res['action']}")
+        print(f"  • Redundant Pipelines Cancelled: {savings.redundant_pipelines_cancelled}")
+        print(f"  • Runner Compute Time Saved: {savings.cpu_minutes_saved} minutes")
+        print(f"  • Cloud Cost Saved: ${savings.cost_saved_usd} USD")
+        print(f"  • Carbon Abated: {savings.carbon_saved_kg_co2} kg CO2e")
+        if savings.stages_skipped:
+            print(f"  • Heavy Stages Safely Skipped: {', '.join(savings.stages_skipped)}")
+
+    elif args.command == "mcp":
+        from .mcp_server import SentinelMCPServer
+        server = SentinelMCPServer()
+        print("🔌 GitLab Sentinel Model Context Protocol (MCP) Server Active")
+        print(f"Available Tools for GitLab Duo / Claude / Gemini:")
+        for t in server.list_tools():
+            print(f"  - {t['name']}: {t['description']}")
+
 
 if __name__ == "__main__":
     main()

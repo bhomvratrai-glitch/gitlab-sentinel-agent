@@ -6,13 +6,22 @@ from .scanner import ASTSecurityScanner, VulnerabilityFinding
 from .ci_runner import SandboxedCIRunner, ExecutionResult
 from .remediator import SentinelRemediator
 from .gitlab_client import GitLabClient
+from .greenops import GreenOpsOptimizer, OptimizationResult
+from .flaky_detector import FlakyTestDetector, FlakyTestReport
+from .mcp_server import SentinelMCPServer
 
-__version__ = "1.0.0"
+__version__ = "1.1.0"
 __all__ = [
     "ASTSecurityScanner",
     "VulnerabilityFinding",
     "SandboxedCIRunner",
     "ExecutionResult",
     "SentinelRemediator",
-    "GitLabClient"
+    "GitLabClient",
+    "GreenOpsOptimizer",
+    "OptimizationResult",
+    "FlakyTestDetector",
+    "FlakyTestReport",
+    "SentinelMCPServer"
 ]
+
