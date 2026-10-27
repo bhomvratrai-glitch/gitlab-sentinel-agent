@@ -6,7 +6,8 @@
 > **Target Cash Pool:** *$45,000 Cash Pool* (Targets: *Best Hands-off $4,000*, *Most Stages Covered $3,000*, *Most Environmentally Impactful $3,000*)  
 > **Public Repository:** [https://github.com/bhomvratrai-glitch/gitlab-sentinel-agent](https://github.com/bhomvratrai-glitch/gitlab-sentinel-agent)  
 > **Live Web Studio:** [https://bhomvratrai-glitch.github.io/gitlab-sentinel-agent/](https://bhomvratrai-glitch.github.io/gitlab-sentinel-agent/)  
-> **Official Video Demo:** [https://youtu.be/neltjtADS7s](https://youtu.be/neltjtADS7s)  
+> **Official Video Demo:** [https://youtu.be/oZ5E6SjkiPs](https://youtu.be/oZ5E6SjkiPs)  
+
 
 ---
 
