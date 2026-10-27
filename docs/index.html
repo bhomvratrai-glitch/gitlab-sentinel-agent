@@ -732,9 +732,14 @@
 
     function selectScenario(id) {
       activeScenario = id;
-      document.querySelectorAll('.scenario-btn').forEach(b => b.classList.remove('active'));
-      event.currentTarget.classList.add('active');
+      document.querySelectorAll('.scenario-btn').forEach(b => {
+        b.classList.remove('active');
+        if (b.getAttribute('onclick') && b.getAttribute('onclick').includes(id)) {
+          b.classList.add('active');
+        }
+      });
     }
+
 
     function runAutonomousLoop() {
       const scen = scenarios[activeScenario];
