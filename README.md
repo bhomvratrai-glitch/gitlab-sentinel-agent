@@ -99,6 +99,9 @@ python3 -m pytest tests/ -v
 Explore live simulated pipeline executions, before/after AST diffs, GreenOps telemetry, and the GitLab Duo MCP playground at:  
 👉 **[https://bhomvratrai-glitch.github.io/gitlab-sentinel-agent/](https://bhomvratrai-glitch.github.io/gitlab-sentinel-agent/)**
 
+📺 **Watch the 1080p Video Walkthrough:** [https://youtu.be/neltjtADS7s](https://youtu.be/neltjtADS7s)
+
+
 ---
 
 ## 📄 License
