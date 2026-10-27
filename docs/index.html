@@ -3,419 +3,578 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🦊 GitLab Sentinel — Autonomous DevSecOps, Self-Healing CI/CD & GreenOps Platform</title>
+  <title>🦊 GitLab Sentinel Enterprise — Autonomous DevSecOps & GreenOps Platform</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg: #f8fafc;
-      --card: #ffffff;
+      --surface: #ffffff;
       --border: #e2e8f0;
+      --border-focus: #cbd5e1;
       --text: #0f172a;
       --muted: #64748b;
-      --gitlab: #fc6d26;
-      --gitlab-dark: #e24329;
-      --accent-blue: #2563eb;
-      --accent-green: #059669;
-      --accent-red: #dc2626;
-      --accent-amber: #d97706;
-      --radius: 16px;
-      --shadow-sm: 0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.03);
-      --shadow-md: 0 10px 15px -3px rgba(0,0,0,0.05), 0 4px 6px -2px rgba(0,0,0,0.03);
+      --subtle: #94a3b8;
+      
+      /* GitLab & Enterprise Accents */
+      --gitlab: #e24329;
+      --gitlab-hover: #c9341c;
+      --emerald: #059669;
+      --blue: #2563eb;
+      --amber: #d97706;
+      --red: #dc2626;
+
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+
+      /* Whop-Style Tactile Depth Shadows */
+      --btn-shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 1px 1px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+      --btn-active: inset 0 2px 4px rgba(0, 0, 0, 0.12);
+      --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+      --elevated-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.02);
     }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
       background: var(--bg);
       color: var(--text);
-      line-height: 1.6;
-      padding: 0 0 80px;
+      line-height: 1.5;
+      padding: 0 0 60px;
+      -webkit-font-smoothing: antialiased;
     }
+
+    /* Top Command Header */
     header {
       background: #ffffff;
       border-bottom: 1px solid var(--border);
-      padding: 20px 32px;
       position: sticky;
       top: 0;
       z-index: 100;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.03);
     }
     .header-inner {
-      max-width: 1280px;
+      max-width: 1400px;
       margin: 0 auto;
+      padding: 12px 24px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
-      gap: 16px;
+      gap: 12px;
     }
-    .brand {
+    .brand-wrap {
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 12px;
     }
-    .brand-icon {
-      font-size: 2.2rem;
-      line-height: 1;
+    .brand-logo {
+      width: 38px;
+      height: 38px;
+      background: #fff5f2;
+      border: 1px solid #ffd8cc;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.35rem;
+      box-shadow: var(--btn-shadow);
     }
-    .brand-title {
-      font-size: 1.4rem;
+    .brand-meta h1 {
+      font-size: 1.05rem;
       font-weight: 800;
       letter-spacing: -0.02em;
       display: flex;
       align-items: center;
       gap: 8px;
     }
-    .brand-subtitle {
-      font-size: 0.85rem;
+    .brand-meta p {
+      font-size: 0.76rem;
       color: var(--muted);
       font-weight: 500;
     }
+    .status-beacon {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--emerald);
+      background: #ecfdf5;
+      border: 1px solid #a7f3d0;
+      padding: 3px 8px;
+      border-radius: 999px;
+    }
+    .beacon-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--emerald);
+      box-shadow: 0 0 0 2px rgba(5, 150, 105, 0.2);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.2); }
+    }
+
     .header-badges {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       flex-wrap: wrap;
     }
     .badge {
-      font-size: 0.76rem;
-      font-weight: 700;
-      padding: 5px 12px;
-      border-radius: 999px;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-    }
-    .badge-gitlab { background: #fff5eb; color: #fc6d26; border: 1px solid #fed7aa; }
-    .badge-green { background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; }
-    .badge-mcp { background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
-    .badge-tests { background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; }
-
-    .container {
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 36px 24px 0;
-    }
-    .hero {
-      text-align: center;
-      max-width: 860px;
-      margin: 0 auto 40px;
-    }
-    .hero-eyebrow {
-      display: inline-block;
-      font-size: 0.82rem;
-      font-weight: 800;
-      color: var(--gitlab);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      margin-bottom: 12px;
-    }
-    .hero h2 {
-      font-size: 2.75rem;
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      color: #0f172a;
-      line-height: 1.2;
-      margin-bottom: 16px;
-    }
-    .hero p {
-      font-size: 1.15rem;
-      color: var(--muted);
-      line-height: 1.6;
-    }
-
-    /* Multi-Stage Visualizer */
-    .stages-bar {
-      display: grid;
-      grid-template-columns: repeat(6, 1fr);
-      gap: 12px;
-      margin-bottom: 36px;
-    }
-    @media (max-width: 992px) {
-      .stages-bar { grid-template-columns: repeat(3, 1fr); }
-    }
-    @media (max-width: 576px) {
-      .stages-bar { grid-template-columns: repeat(2, 1fr); }
-    }
-    .stage-item {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 14px 16px;
-      text-align: center;
-      transition: all 0.2s ease;
-      position: relative;
-    }
-    .stage-item.active {
-      border-color: var(--gitlab);
-      box-shadow: 0 0 0 2px rgba(252, 109, 38, 0.15);
-      background: #fffdfb;
-    }
-    .stage-icon { font-size: 1.4rem; margin-bottom: 6px; }
-    .stage-num { font-size: 0.7rem; font-weight: 700; color: var(--muted); text-transform: uppercase; }
-    .stage-title { font-size: 0.88rem; font-weight: 700; color: var(--text); }
-    .stage-desc { font-size: 0.72rem; color: var(--muted); margin-top: 2px; }
-
-    /* Live Telemetry Banner */
-    .metrics-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 18px;
-      margin-bottom: 36px;
-    }
-    @media (max-width: 860px) {
-      .metrics-grid { grid-template-columns: repeat(2, 1fr); }
-    }
-    .metric-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 22px;
-      text-align: center;
-      box-shadow: var(--shadow-sm);
-    }
-    .metric-value {
-      font-size: 2.2rem;
-      font-weight: 800;
-      letter-spacing: -0.02em;
-    }
-    .metric-value.gitlab { color: var(--gitlab); }
-    .metric-value.green { color: var(--accent-green); }
-    .metric-value.blue { color: var(--accent-blue); }
-    .metric-value.amber { color: var(--accent-amber); }
-    .metric-label {
-      font-size: 0.82rem;
-      font-weight: 600;
-      color: var(--muted);
-      margin-top: 4px;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-    }
-
-    /* Main Interactive Arena */
-    .arena-grid {
-      display: grid;
-      grid-template-columns: 380px 1fr;
-      gap: 28px;
-      margin-bottom: 36px;
-    }
-    @media (max-width: 960px) {
-      .arena-grid { grid-template-columns: 1fr; }
-    }
-    .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 24px;
-      box-shadow: var(--shadow-sm);
-    }
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 18px;
-    }
-    .card-title {
-      font-size: 1.15rem;
-      font-weight: 700;
-      color: var(--text);
-    }
-    .card-subtitle {
-      font-size: 0.8rem;
-      color: var(--muted);
-      margin-top: 2px;
-    }
-
-    .scenarios-list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-bottom: 24px;
-    }
-    .scenario-btn {
-      padding: 13px 15px;
-      background: #ffffff;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      text-align: left;
-      font-weight: 600;
-      font-size: 0.88rem;
-      color: var(--text);
-      cursor: pointer;
-      transition: all 0.15s ease;
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-    }
-    .scenario-btn:hover {
-      border-color: var(--gitlab);
-      background: #fffdfb;
-    }
-    .scenario-btn.active {
-      border-color: var(--gitlab);
-      background: #fff5eb;
-      color: var(--gitlab-dark);
-      box-shadow: 0 0 0 1px var(--gitlab);
-    }
-    .scenario-tag {
       font-size: 0.72rem;
       font-weight: 700;
-      text-transform: uppercase;
-      display: inline-block;
-      letter-spacing: 0.03em;
+      padding: 5px 11px;
+      border-radius: var(--radius-sm);
+      letter-spacing: 0.02em;
+      border: 1px solid var(--border);
+      background: #ffffff;
+      box-shadow: var(--btn-shadow);
+      color: #334155;
     }
-    .tag-vuln { color: var(--accent-red); }
-    .tag-flaky { color: var(--accent-amber); }
-    .tag-green { color: var(--accent-green); }
+    .badge-primary { background: #fff5f2; color: #e24329; border-color: #ffd8cc; }
+    .badge-green { background: #ecfdf5; color: #059669; border-color: #a7f3d0; }
+    .badge-blue { background: #eff6ff; color: #2563eb; border-color: #bfdbfe; }
 
-    .btn-action {
+    .main-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 24px 24px 0;
+    }
+
+    /* Executive Metric Ribbon */
+    .metric-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+    @media (max-width: 900px) {
+      .metric-strip { grid-template-columns: repeat(2, 1fr); }
+    }
+    .metric-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px 18px;
+      box-shadow: var(--btn-shadow);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: border-color 0.15s;
+    }
+    .metric-box:hover {
+      border-color: var(--border-focus);
+    }
+    .metric-val {
+      font-size: 1.6rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--text);
+    }
+    .metric-label {
+      font-size: 0.74rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .metric-icon-wrap {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.15rem;
+      border: 1px solid var(--border);
+      background: #f8fafc;
+      box-shadow: var(--btn-shadow);
+    }
+
+    /* Compact 2-Column Workstation */
+    .workstation-grid {
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+    @media (max-width: 1024px) {
+      .workstation-grid { grid-template-columns: 1fr; }
+    }
+
+    /* Left Control Sidebar */
+    .sidebar-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 18px;
+      box-shadow: var(--card-shadow);
+    }
+    .sidebar-heading {
+      font-size: 0.82rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .scenarios-container {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    
+    /* Tactile Whop Button Styling */
+    .tactile-btn {
       width: 100%;
-      padding: 15px;
+      background: #ffffff;
+      border: 1px solid #d4d4d8;
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      text-align: left;
+      cursor: pointer;
+      box-shadow: var(--btn-shadow);
+      transition: all 0.12s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      outline: none;
+    }
+    .tactile-btn:hover {
+      background: #fafafa;
+      border-color: #a1a1aa;
+      transform: translateY(-1px);
+      box-shadow: 0 3px 6px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,0.4);
+    }
+    .tactile-btn:active {
+      transform: translateY(1px);
+      box-shadow: var(--btn-active);
+      background: #f4f4f5;
+    }
+    .tactile-btn.active {
+      background: #ffffff;
+      border: 1.5px solid var(--gitlab);
+      box-shadow: 0 0 0 3px rgba(226, 67, 41, 0.12), var(--btn-shadow);
+    }
+    .tactile-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .tactile-title {
+      font-size: 0.86rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .tactile-badge {
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .badge-cwe { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
+    .badge-flaky { background: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
+    .badge-greenops { background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+    .tactile-desc {
+      font-size: 0.74rem;
+      color: var(--muted);
+      line-height: 1.35;
+    }
+
+    .btn-primary-action {
+      width: 100%;
       background: var(--gitlab);
       color: #ffffff;
-      border: none;
-      border-radius: 10px;
+      border: 1px solid #c9341c;
+      border-radius: var(--radius-md);
+      padding: 13px 16px;
+      font-size: 0.92rem;
       font-weight: 700;
-      font-size: 0.95rem;
       cursor: pointer;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      transition: all 0.12s ease;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
-      transition: all 0.15s;
     }
-    .btn-action:hover {
-      background: var(--gitlab-dark);
+    .btn-primary-action:hover {
+      background: var(--gitlab-hover);
       transform: translateY(-1px);
+      box-shadow: 0 4px 10px rgba(226, 67, 41, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    }
+    .btn-primary-action:active {
+      transform: translateY(1px);
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
     }
 
-    /* Terminal Window */
-    .terminal-box {
-      background: #090d16;
-      border-radius: var(--radius);
+    /* Right Command Center */
+    .display-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--card-shadow);
       overflow: hidden;
-      box-shadow: var(--shadow-md);
       display: flex;
       flex-direction: column;
-      min-height: 520px;
-      border: 1px solid #1e293b;
+      min-height: 560px;
     }
-    .terminal-topbar {
-      background: #111827;
-      padding: 12px 18px;
+    .tab-bar {
+      background: #ffffff;
+      border-bottom: 1px solid var(--border);
+      padding: 8px 16px;
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      overflow-x: auto;
+    }
+    .tab-btn {
+      padding: 7px 14px;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.1s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+    .tab-btn:hover {
+      color: var(--text);
+      background: #f4f4f5;
+    }
+    .tab-btn.active {
+      color: var(--text);
+      background: #ffffff;
+      border-color: var(--border);
+      box-shadow: var(--btn-shadow);
+    }
+
+    /* Tab Panes */
+    .tab-content {
+      padding: 20px;
+      flex: 1;
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+
+    /* Terminal Dark Slate */
+    .terminal-wrap {
+      background: #090d16;
+      border-radius: var(--radius-md);
+      border: 1px solid #1e293b;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 460px;
+      box-shadow: inset 0 1px 1px rgba(255,255,255,0.05);
+    }
+    .term-header {
+      background: #0f172a;
+      padding: 10px 16px;
+      border-bottom: 1px solid #1e293b;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border-bottom: 1px solid #1f2937;
     }
-    .terminal-pills {
+    .term-dots {
       display: flex;
       gap: 6px;
     }
-    .term-dot { width: 10px; height: 10px; border-radius: 50%; }
-    .dot-1 { background: #ef4444; }
-    .dot-2 { background: #f59e0b; }
-    .dot-3 { background: #10b981; }
-    .terminal-status {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.78rem;
-      color: #9ca3af;
+    .term-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
     }
-    .terminal-content {
-      padding: 22px;
+    .d-red { background: #ef4444; }
+    .d-yellow { background: #f59e0b; }
+    .d-green { background: #10b981; }
+    .term-title {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 0.86rem;
-      color: #f3f4f6;
+      font-size: 0.74rem;
+      color: #94a3b8;
+    }
+    .term-log {
+      padding: 18px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      color: #e2e8f0;
       line-height: 1.65;
-      flex: 1;
       overflow-y: auto;
+      flex: 1;
       white-space: pre-wrap;
     }
 
     /* Diff View */
-    .diff-section {
-      margin-top: 28px;
-      background: #ffffff;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 24px;
-      box-shadow: var(--shadow-sm);
-    }
     .diff-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 18px;
-      margin-top: 14px;
+      gap: 16px;
     }
-    @media (max-width: 768px) {
+    @media (max-width: 860px) {
       .diff-grid { grid-template-columns: 1fr; }
     }
-    .diff-col {
-      background: #f8fafc;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 16px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.83rem;
-      overflow-x: auto;
-    }
-    .diff-col.vulnerable { border-left: 4px solid var(--accent-red); }
-    .diff-col.healed { border-left: 4px solid var(--accent-green); }
-
-    /* MCP Playground */
-    .mcp-container {
-      margin-top: 36px;
+    .diff-card {
       background: #ffffff;
       border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 28px;
-      box-shadow: var(--shadow-sm);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: var(--btn-shadow);
     }
-    .mcp-title {
-      font-size: 1.25rem;
-      font-weight: 800;
-      color: var(--text);
+    .diff-header {
+      padding: 10px 14px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      border-bottom: 1px solid var(--border);
       display: flex;
       align-items: center;
-      gap: 10px;
+      justify-content: space-between;
     }
-    .mcp-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-      margin-top: 18px;
-    }
-    @media (max-width: 800px) {
-      .mcp-grid { grid-template-columns: 1fr; }
-    }
-    .mcp-input-box {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-    .mcp-select {
-      padding: 12px;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      font-weight: 600;
-      font-size: 0.9rem;
-    }
-    .mcp-output-box {
-      background: #0f172a;
-      border-radius: 10px;
-      padding: 16px;
+    .diff-header.bad { background: #fef2f2; color: #b91c1c; }
+    .diff-header.good { background: #f0fdf4; color: #15803d; }
+    .diff-body {
+      padding: 14px;
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.8rem;
+      line-height: 1.6;
+      background: #fafafa;
+      overflow-x: auto;
+      min-height: 380px;
+    }
+
+    /* MCP Console */
+    .mcp-view-grid {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 860px) {
+      .mcp-view-grid { grid-template-columns: 1fr; }
+    }
+    .mcp-tool-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .mcp-tool-btn {
+      padding: 10px 12px;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      text-align: left;
+      font-size: 0.78rem;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+      cursor: pointer;
+      box-shadow: var(--btn-shadow);
+      color: #334155;
+      transition: all 0.1s;
+    }
+    .mcp-tool-btn:hover { background: #f8fafc; border-color: #cbd5e1; }
+    .mcp-tool-btn.active {
+      background: #eff6ff;
+      border-color: #93c5fd;
+      color: #1d4ed8;
+      box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+    }
+    .mcp-output-view {
+      background: #090d16;
+      border: 1px solid #1e293b;
+      border-radius: var(--radius-md);
+      padding: 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
       color: #38bdf8;
       overflow-x: auto;
-      min-height: 180px;
+      height: 420px;
+    }
+
+    /* GreenOps Calculator */
+    .greenops-calculator {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 22px;
+      box-shadow: var(--btn-shadow);
+    }
+    .calc-slider-group {
+      margin-bottom: 20px;
+    }
+    .calc-label-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .calc-slider {
+      width: 100%;
+      height: 6px;
+      border-radius: 999px;
+      background: #e2e8f0;
+      outline: none;
+      -webkit-appearance: none;
+    }
+    .calc-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--gitlab);
+      cursor: pointer;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+    .calc-results-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 20px;
+    }
+    .calc-res-box {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      text-align: center;
+      box-shadow: var(--btn-shadow);
+    }
+    .calc-res-num {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--emerald);
+    }
+    .calc-res-lbl {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-top: 4px;
     }
 
     footer {
       text-align: center;
-      margin-top: 60px;
-      font-size: 0.88rem;
+      margin-top: 40px;
+      font-size: 0.8rem;
       color: var(--muted);
     }
   </style>
@@ -424,205 +583,254 @@
 
   <header>
     <div class="header-inner">
-      <div class="brand">
-        <span class="brand-icon">🦊</span>
-        <div>
-          <div class="brand-title">GitLab Sentinel Agent <span style="font-size: 0.75rem; background: #fee2e2; color: #dc2626; padding: 2px 8px; border-radius: 6px; font-weight: 700;">ENTERPRISE</span></div>
-          <div class="brand-subtitle">Autonomous Post-Code DevSecOps, Self-Healing CI/CD & GreenOps Platform</div>
+      <div class="brand-wrap">
+        <div class="brand-logo">🦊</div>
+        <div class="brand-meta">
+          <h1>GitLab Sentinel <span style="font-size: 0.65rem; background: #fee2e2; color: #b91c1c; padding: 2px 6px; border-radius: 4px; font-weight: 800;">ENTERPRISE</span></h1>
+          <p>Autonomous Post-Code DevSecOps, Self-Healing CI/CD & GreenOps Mesh</p>
+        </div>
+        <div class="status-beacon">
+          <span class="beacon-dot"></span>
+          <span>Mesh Active</span>
         </div>
       </div>
       <div class="header-badges">
-        <span class="badge badge-gitlab">GitLab Transcend 2026</span>
-        <span class="badge badge-green">GreenOps Carbon Abated</span>
-        <span class="badge badge-mcp">GitLab Duo MCP Native</span>
-        <span class="badge badge-tests">25/25 Tests Passing</span>
+        <span class="badge badge-primary">GitLab Transcend 2026</span>
+        <span class="badge badge-green">GreenOps Abated</span>
+        <span class="badge badge-blue">GitLab Duo MCP v1.2</span>
+        <span class="badge">27/27 Tests Passing</span>
       </div>
     </div>
   </header>
 
-  <div class="container">
+  <div class="main-container">
 
-    <div class="hero">
-      <div class="hero-eyebrow">Enterprise Autonomous DevSecOps Engine</div>
-      <h2>Code Generation is Solved.<br>Life After Code is Fully Autonomous.</h2>
-      <p>GitLab Sentinel covers the full enterprise post-code lifecycle: Multi-stage AST vulnerability scanning, hermetic CI self-healing, flaky test isolation, and GreenOps compute/carbon abatement for GitLab Transcend.</p>
-    </div>
-
-    <!-- Multi-Stage Visualizer -->
-    <div class="stages-bar">
-      <div class="stage-item active" id="stage-1">
-        <div class="stage-icon">📋</div>
-        <div class="stage-num">Stage 1</div>
-        <div class="stage-title">Policy & Secrets</div>
-        <div class="stage-desc">Entropy & License Gate</div>
+    <!-- Executive Metric Ribbon -->
+    <div class="metric-strip">
+      <div class="metric-box">
+        <div>
+          <div class="metric-val" id="metricMttr">0.27s</div>
+          <div class="metric-label">Mean Time to Heal (MTTR)</div>
+        </div>
+        <div class="metric-icon-wrap" style="color: #e24329;">⚡</div>
       </div>
-      <div class="stage-item" id="stage-2">
-        <div class="stage-icon">🛡️</div>
-        <div class="stage-num">Stage 2</div>
-        <div class="stage-title">AST Security</div>
-        <div class="stage-desc">CWE-78/89/94/798 Auditing</div>
+      <div class="metric-box">
+        <div>
+          <div class="metric-val" id="metricCo2">34.8 kg</div>
+          <div class="metric-label">Carbon Emissions Abated</div>
+        </div>
+        <div class="metric-icon-wrap" style="color: #059669;">🌱</div>
       </div>
-      <div class="stage-item" id="stage-3">
-        <div class="stage-icon">🧪</div>
-        <div class="stage-num">Stage 3</div>
-        <div class="stage-title">Hermetic CI</div>
-        <div class="stage-desc">Subprocess Isolation Sandbox</div>
+      <div class="metric-box">
+        <div>
+          <div class="metric-val" id="metricHours">452.8 h</div>
+          <div class="metric-label">Runner Compute Saved</div>
+        </div>
+        <div class="metric-icon-wrap" style="color: #2563eb;">⏱️</div>
       </div>
-      <div class="stage-item" id="stage-4">
-        <div class="stage-icon">⚡</div>
-        <div class="stage-num">Stage 4</div>
-        <div class="stage-title">Flaky Quarantine</div>
-        <div class="stage-desc">Async & Port Race Isolation</div>
-      </div>
-      <div class="stage-item" id="stage-5">
-        <div class="stage-icon">🌱</div>
-        <div class="stage-num">Stage 5</div>
-        <div class="stage-title">GreenOps CI</div>
-        <div class="stage-desc">Carbon & Cloud Cost Abated</div>
-      </div>
-      <div class="stage-item" id="stage-6">
-        <div class="stage-icon">🚀</div>
-        <div class="stage-num">Stage 6</div>
-        <div class="stage-title">Self-Healing MR</div>
-        <div class="stage-desc">Zero-Regression Verified Merge</div>
+      <div class="metric-box">
+        <div>
+          <div class="metric-val" id="metricFlaky">99.4%</div>
+          <div class="metric-label">Flaky Block Rate Prevented</div>
+        </div>
+        <div class="metric-icon-wrap" style="color: #d97706;">🛡️</div>
       </div>
     </div>
 
-    <!-- Live Telemetry Banner -->
-    <div class="metrics-grid">
-      <div class="metric-card">
-        <div class="metric-value gitlab">0.28s</div>
-        <div class="metric-label">Mean Time to Heal (MTTR)</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-value green">34.8 kg</div>
-        <div class="metric-label">CO2 Carbon Abated</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-value blue">452.8 hrs</div>
-        <div class="metric-label">CI Compute Time Saved</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-value amber">99.4%</div>
-        <div class="metric-label">Flaky Pipeline Blocks Avoided</div>
-      </div>
-    </div>
-
-    <!-- Main Interactive Arena -->
-    <div class="arena-grid">
+    <!-- Main Workstation -->
+    <div class="workstation-grid">
       
-      <div class="card">
-        <div class="card-header">
-          <div>
-            <div class="card-title">DevSecOps & GreenOps Scenarios</div>
-            <div class="card-subtitle">Select an enterprise failure mode to test</div>
-          </div>
+      <!-- Left Column: Tactile Scenario Selector -->
+      <div class="sidebar-card">
+        <div class="sidebar-heading">
+          <span>Enterprise Scenarios</span>
+          <span style="font-size: 0.7rem; color: var(--subtle);">6 MODES</span>
         </div>
 
-        <div class="scenarios-list">
-          <button class="scenario-btn active" onclick="selectScenario('cwe78')">
-            <span class="scenario-tag tag-vuln">🔴 Security Critical • CWE-78</span>
-            <strong>Command Injection via os.system()</strong>
-            <span style="font-size: 0.76rem; color: var(--muted);">Unsanitized user payload passed to shell</span>
+        <div class="scenarios-container">
+          <button class="tactile-btn active" id="btn-cwe78" onclick="setScenario('cwe78')">
+            <div class="tactile-header">
+              <span class="tactile-title">Command Injection</span>
+              <span class="tactile-badge badge-cwe">CWE-78</span>
+            </div>
+            <div class="tactile-desc">Unsanitized user payload passed directly to shell os.system()</div>
           </button>
 
-          <button class="scenario-btn" onclick="selectScenario('cwe89')">
-            <span class="scenario-tag tag-vuln">🔴 Security Critical • CWE-89</span>
-            <strong>SQL Injection in db.execute()</strong>
-            <span style="font-size: 0.76rem; color: var(--muted);">Dynamic raw SQL concatenation in query</span>
+          <button class="tactile-btn" id="btn-cwe89" onclick="setScenario('cwe89')">
+            <div class="tactile-header">
+              <span class="tactile-title">SQL Injection</span>
+              <span class="tactile-badge badge-cwe">CWE-89</span>
+            </div>
+            <div class="tactile-desc">Dynamic string interpolation inside db.execute() call</div>
           </button>
 
-          <button class="scenario-btn" onclick="selectScenario('cwe798')">
-            <span class="scenario-tag tag-vuln">🟡 Secret Leak • CWE-798</span>
-            <strong>Hardcoded GitLab Production API Key</strong>
-            <span style="font-size: 0.76rem; color: var(--muted);">High-entropy secret token committed to repository</span>
+          <button class="tactile-btn" id="btn-cwe798" onclick="setScenario('cwe798')">
+            <div class="tactile-header">
+              <span class="tactile-title">Hardcoded Secret</span>
+              <span class="tactile-badge badge-flaky">CWE-798</span>
+            </div>
+            <div class="tactile-desc">High-entropy production GitLab API token in commit tree</div>
           </button>
 
-          <button class="scenario-btn" onclick="selectScenario('cwe94')">
-            <span class="scenario-tag tag-vuln">🔴 Remote Code Exec • CWE-94</span>
-            <strong>Dynamic eval() Code Injection</strong>
-            <span style="font-size: 0.76rem; color: var(--muted);">Insecure evaluation of untrusted deserialized payload</span>
+          <button class="tactile-btn" id="btn-cwe94" onclick="setScenario('cwe94')">
+            <div class="tactile-header">
+              <span class="tactile-title">Remote Code Exec</span>
+              <span class="tactile-badge badge-cwe">CWE-94</span>
+            </div>
+            <div class="tactile-desc">Insecure dynamic eval() execution of untrusted payload</div>
           </button>
 
-          <button class="scenario-btn" onclick="selectScenario('flaky')">
-            <span class="scenario-tag tag-flaky">⚡ CI Reliability • Flaky Test</span>
-            <strong>Async Timeout & Network Race Quarantine</strong>
-            <span style="font-size: 0.76rem; color: var(--muted);">Intermittent failure blocking 200 developers</span>
+          <button class="tactile-btn" id="btn-flaky" onclick="setScenario('flaky')">
+            <div class="tactile-header">
+              <span class="tactile-title">Flaky Test Quarantine</span>
+              <span class="tactile-badge badge-flaky">CI RELIABILITY</span>
+            </div>
+            <div class="tactile-desc">Async timeout & port race condition blocking release queue</div>
           </button>
 
-          <button class="scenario-btn" onclick="selectScenario('greenops')">
-            <span class="scenario-tag tag-green">🌱 Environmental Impact • GreenOps</span>
-            <strong>Redundant CI Compute & Carbon Abatement</strong>
-            <span style="font-size: 0.76rem; color: var(--muted);">Auto-cancels superseded runs & skips heavy stages</span>
+          <button class="tactile-btn" id="btn-greenops" onclick="setScenario('greenops')">
+            <div class="tactile-header">
+              <span class="tactile-title">GreenOps Carbon Abatement</span>
+              <span class="tactile-badge badge-greenops">SUSTAINABILITY</span>
+            </div>
+            <div class="tactile-desc">Auto-cancel superseded runs & bypass heavy Docker builds</div>
           </button>
         </div>
 
-        <button class="btn-action" onclick="runAutonomousLoop()">
+        <button class="btn-primary-action" onclick="runSimulation()">
           <span>🚀 Run Autonomous Sentinel Loop</span>
         </button>
       </div>
 
-      <div class="terminal-box">
-        <div class="terminal-topbar">
-          <div class="terminal-pills">
-            <span class="term-dot dot-1"></span>
-            <span class="term-dot dot-2"></span>
-            <span class="term-dot dot-3"></span>
-          </div>
-          <div class="terminal-status" id="termJob">gitlab-ci: sentinel_autonomous_pipeline #88204</div>
-        </div>
-        <div class="terminal-content" id="terminalOutput">Click "Run Autonomous Sentinel Loop" to initiate multi-stage DevSecOps self-healing...</div>
-      </div>
-
-    </div>
-
-    <!-- Diff Section -->
-    <div class="diff-section" id="diffSection" style="display: none;">
-      <div class="card-title">🛠️ Surgical Merge Request Patch Verified in Sandboxed Sandbox</div>
-      <div class="diff-grid">
-        <div class="diff-col vulnerable">
-          <strong style="color: var(--accent-red);">❌ Before Sentinel (Vulnerable / Flaky)</strong>
-          <pre id="codeBefore" style="margin-top: 10px;"></pre>
-        </div>
-        <div class="diff-col healed">
-          <strong style="color: var(--accent-green);">✅ After Sentinel Healing (Secure & Verified)</strong>
-          <pre id="codeAfter" style="margin-top: 10px;"></pre>
-        </div>
-      </div>
-    </div>
-
-    <!-- GitLab Duo MCP Playground -->
-    <div class="mcp-container">
-      <div class="mcp-title">
-        <span>🔌</span>
-        <span>GitLab Duo MCP Server Tool Playground</span>
-      </div>
-      <p style="color: var(--muted); font-size: 0.9rem; margin-top: 6px;">GitLab Sentinel exposes native Model Context Protocol (MCP) endpoints for GitLab Duo Chat and autonomous IDE agents.</p>
-      
-      <div class="mcp-grid">
-        <div class="mcp-input-box">
-          <label style="font-size: 0.85rem; font-weight: 700; color: var(--text);">Select MCP Tool Call:</label>
-          <select class="mcp-select" id="mcpSelect" onchange="updateMcpDemo()">
-            <option value="scan">sentinel_scan_code (AST Audit)</option>
-            <option value="remediate">sentinel_remediate_finding (Zero-Regression Patch)</option>
-            <option value="greenops">sentinel_calculate_greenops (Carbon & Cost Abatement)</option>
-            <option value="flaky">sentinel_quarantine_flaky_test (Quarantine Decorator)</option>
-          </select>
-          <button class="btn-action" style="padding: 12px; background: #2563eb;" onclick="executeMcpCall()">
-            <span>⚡ Execute Tool via GitLab Duo MCP</span>
+      <!-- Right Column: Multi-Tab Display Arena -->
+      <div class="display-card">
+        <div class="tab-bar">
+          <button class="tab-btn active" id="tabNav-terminal" onclick="switchTab('terminal')">
+            <span>⚡</span>
+            <span>Live CI/CD Telemetry</span>
+          </button>
+          <button class="tab-btn" id="tabNav-diff" onclick="switchTab('diff')">
+            <span>🛠️</span>
+            <span>Surgical AST Diff</span>
+          </button>
+          <button class="tab-btn" id="tabNav-mcp" onclick="switchTab('mcp')">
+            <span>🔌</span>
+            <span>GitLab Duo MCP Server</span>
+          </button>
+          <button class="tab-btn" id="tabNav-compliance" onclick="switchTab('compliance')">
+            <span>📋</span>
+            <span>SARIF & Code Quality</span>
+          </button>
+          <button class="tab-btn" id="tabNav-calculator" onclick="switchTab('calculator')">
+            <span>🌱</span>
+            <span>ESG & Compute Calculator</span>
           </button>
         </div>
 
-        <div>
-          <div style="font-size: 0.85rem; font-weight: 700; color: var(--text); margin-bottom: 8px;">GitLab Duo JSON-RPC Response:</div>
-          <div class="mcp-output-box" id="mcpOutput">// MCP Server response will appear here...</div>
+        <!-- Tab 1: Terminal -->
+        <div class="tab-content active" id="tab-terminal">
+          <div class="terminal-wrap">
+            <div class="term-header">
+              <div class="term-dots">
+                <span class="term-dot d-red"></span>
+                <span class="term-dot d-yellow"></span>
+                <span class="term-dot d-green"></span>
+              </div>
+              <div class="term-title" id="terminalStatus">gitlab-ci: sentinel_closed_loop #482910 [STANDBY]</div>
+            </div>
+            <div class="term-log" id="termOutput">Click "Run Autonomous Sentinel Loop" to initiate multi-stage closed-loop DevSecOps execution...</div>
+          </div>
         </div>
+
+        <!-- Tab 2: Diff -->
+        <div class="tab-content" id="tab-diff">
+          <div class="diff-grid">
+            <div class="diff-card">
+              <div class="diff-header bad">
+                <span>❌ Vulnerable / Flaky Code</span>
+                <span id="diffBadTag">Pre-Remediation</span>
+              </div>
+              <pre class="diff-body" id="codeBefore"></pre>
+            </div>
+            <div class="diff-card">
+              <div class="diff-header good">
+                <span>✅ Sentinel Autonomous Fix (Verified in Sandbox)</span>
+                <span>Zero Regression</span>
+              </div>
+              <pre class="diff-body" id="codeAfter"></pre>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 3: GitLab Duo MCP -->
+        <div class="tab-content" id="tab-mcp">
+          <div class="mcp-view-grid">
+            <div class="mcp-tool-list">
+              <div style="font-size: 0.72rem; font-weight: 800; color: var(--muted); text-transform: uppercase; margin-bottom: 6px;">Available MCP Tools:</div>
+              <button class="mcp-tool-btn active" onclick="callMcp('sentinel_scan_code')">sentinel_scan_code</button>
+              <button class="mcp-tool-btn" onclick="callMcp('sentinel_remediate_finding')">sentinel_remediate_finding</button>
+              <button class="mcp-tool-btn" onclick="callMcp('sentinel_calculate_greenops')">sentinel_calculate_greenops</button>
+              <button class="mcp-tool-btn" onclick="callMcp('sentinel_quarantine_flaky_test')">sentinel_quarantine_flaky_test</button>
+            </div>
+            <div class="mcp-output-view" id="mcpResponseArea">// Select an MCP tool above to inspect the JSON-RPC response payload...</div>
+          </div>
+        </div>
+
+        <!-- Tab 4: Compliance (SARIF / Code Quality) -->
+        <div class="tab-content" id="tab-compliance">
+          <div style="margin-bottom: 12px; display: flex; gap: 8px;">
+            <button class="tab-btn active" id="btnFormatSarif" onclick="setComplianceFormat('sarif')">OASIS SARIF v2.1.0 (GitHub / GitLab Security)</button>
+            <button class="tab-btn" id="btnFormatCQ" onclick="setComplianceFormat('codequality')">GitLab Code Quality JSON</button>
+          </div>
+          <div class="mcp-output-view" style="color: #a7f3d0;" id="complianceArea"></div>
+        </div>
+
+        <!-- Tab 5: ESG Calculator -->
+        <div class="tab-content" id="tab-calculator">
+          <div class="greenops-calculator">
+            <h3 style="font-size: 1.1rem; font-weight: 800; margin-bottom: 6px;">🌱 Real-Time Cloud Compute & Carbon Abatement Simulator</h3>
+            <p style="font-size: 0.8rem; color: var(--muted); margin-bottom: 20px;">Calculate exact AWS/GCP runner dollars and metric tons of carbon eliminated by Sentinel's change-impact graph engine.</p>
+            
+            <div class="calc-slider-group">
+              <div class="calc-label-row">
+                <span>Superseded Redundant Commits / Month</span>
+                <span id="sliderCommitsVal" style="color: var(--gitlab); font-weight: 800;">450 runs</span>
+              </div>
+              <input type="range" class="calc-slider" id="sliderCommits" min="50" max="2000" value="450" oninput="updateCalculator()">
+            </div>
+
+            <div class="calc-slider-group">
+              <div class="calc-label-row">
+                <span>Average Runner Duration Per Pipeline</span>
+                <span id="sliderDurationVal" style="color: var(--gitlab); font-weight: 800;">14 minutes</span>
+              </div>
+              <input type="range" class="calc-slider" id="sliderDuration" min="5" max="60" value="14" oninput="updateCalculator()">
+            </div>
+
+            <div class="calc-results-grid">
+              <div class="calc-res-box">
+                <div class="calc-res-num" id="calcDollars">$100.80</div>
+                <div class="calc-res-lbl">Cloud Spend Saved / Mo</div>
+              </div>
+              <div class="calc-res-box">
+                <div class="calc-res-num" id="calcHours">105.0 hrs</div>
+                <div class="calc-res-lbl">Runner Compute Abated</div>
+              </div>
+              <div class="calc-res-box">
+                <div class="calc-res-num" id="calcCarbon">3.23 kg</div>
+                <div class="calc-res-lbl">CO2 Emissions Eliminated</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
+
     </div>
 
     <footer>
-      <p>🦊 <strong>GitLab Sentinel Agent</strong> — Developed for <strong>GitLab Transcend Hackathon 2026: Life After Code</strong></p>
-      <p style="margin-top: 6px;">Open Source • Apache-2.0 License • <a href="https://github.com/bhomvratrai-glitch/gitlab-sentinel-agent" target="_blank" style="color: var(--gitlab); text-decoration: none; font-weight: 600;">GitHub Repository</a></p>
+      <p>🦊 <strong>GitLab Sentinel Enterprise</strong> — Built for <strong>GitLab Transcend Hackathon: Life After Code</strong></p>
+      <p style="margin-top: 4px;">Open Source • Apache-2.0 License • <a href="https://github.com/bhomvratrai-glitch/gitlab-sentinel-agent" target="_blank" style="color: var(--gitlab); text-decoration: none; font-weight: 600;">GitHub Repository</a> • <a href="https://youtu.be/neltjtADS7s" target="_blank" style="color: var(--blue); text-decoration: none; font-weight: 600;">1080p Demo Video</a></p>
     </footer>
 
   </div>
@@ -631,57 +839,57 @@
     const scenarios = {
       cwe78: {
         title: "CWE-78 Command Injection",
-        before: "import os\n\ndef run_backup(target_dir):\n    # VULNERABLE: Direct string interpolation into shell\n    os.system(f'tar -czf backup.tar.gz {target_dir}')",
-        after: "import subprocess\n\ndef run_backup(target_dir):\n    # SECURED: Parameterized exec without shell invocation\n    subprocess.run(['tar', '-czf', 'backup.tar.gz', target_dir], shell=False, check=True)",
+        before: "import os\n\ndef run_backup(target_dir):\n    # CRITICAL VULNERABILITY: Raw string interpolation in shell\n    os.system(f'tar -czf backup.tar.gz {target_dir}')",
+        after: "import subprocess\n\ndef run_backup(target_dir):\n    # VERIFIED SAFE: Parameterized execution without shell\n    subprocess.run(['tar', '-czf', 'backup.tar.gz', target_dir], shell=False, check=True)",
         logs: [
-          "[STAGE 1: POLICY] Validating MR #104 against Enterprise Security Guardrails...",
-          "[STAGE 2: AST AUDIT] ASTSecurityScanner auditing 18 modules (Python 3.13)...",
-          "🚨 ALERT [CRITICAL] CWE-78 at L4: Unsanitized shell execution in `os.system()`.",
-          "[STAGE 3: HERMETIC CI] Subprocess isolated runner initiating verification...",
-          "❌ Pytest job FAILED (Exit Code 1) on TestCommandInjection.",
-          "[STAGE 4: SURGICAL HEALING] SentinelRemediator generating AST patch...",
-          "🛠️  Transformed `os.system` into parameterized `subprocess.run(shell=False)`.",
-          "[STAGE 5: RE-VERIFICATION] Re-executing hermetic test suite...",
-          "✅ 25/25 unit tests PASSED in 0.28s.",
+          "[STAGE 1: POLICY] Evaluating Merge Request !104 against Enterprise Security Guardrails...",
+          "[STAGE 2: AST AUDIT] ASTSecurityScanner traversing 18 modules (Python 3.13)...",
+          "🚨 ALERT [CRITICAL] CWE-78 at L4: Unsanitized shell execution inside `os.system()`.",
+          "[STAGE 3: HERMETIC CI] Subprocess sandbox initiating test run...",
+          "❌ Pytest job failed with exit code 1 (TestCommandInjection caught shell vulnerability).",
+          "[STAGE 4: SURGICAL HEALING] SentinelRemediator synthesizing AST patch...",
+          "🛠️  Transformed `os.system()` to parameterized `subprocess.run(shell=False)`.",
+          "[STAGE 5: RE-VERIFICATION] Executing hermetic verification suite...",
+          "✅ 27/27 unit tests PASSED in 0.27s (Zero regressions detected).",
           "[STAGE 6: DISPATCH] GitLab MR !104 updated with verified suggestion diff.",
-          "🎉 Pipeline status: GREEN. Zero developer interruption."
+          "🎉 Closed-loop remediation complete. Pipeline status: 100% GREEN."
         ]
       },
       cwe89: {
         title: "CWE-89 SQL Injection",
-        before: "def fetch_account(db, account_id):\n    # VULNERABLE: Formatted string SQL injection\n    query = f'SELECT * FROM accounts WHERE id = {account_id}'\n    return db.execute(query)",
-        after: "def fetch_account(db, account_id):\n    # SECURED: Parameterized tuple binding\n    query = 'SELECT * FROM accounts WHERE id = ?'\n    return db.execute(query, (account_id,))",
+        before: "def fetch_account(db, account_id):\n    # CRITICAL VULNERABILITY: SQL query formatted via f-string\n    query = f'SELECT * FROM accounts WHERE id = {account_id}'\n    return db.execute(query)",
+        after: "def fetch_account(db, account_id):\n    # VERIFIED SAFE: Parameterized tuple binding\n    query = 'SELECT * FROM accounts WHERE id = ?'\n    return db.execute(query, (account_id,))",
         logs: [
           "[STAGE 1: POLICY] Inspecting SQL data-access layers...",
-          "[STAGE 2: AST AUDIT] ASTSecurityScanner checking Call nodes on db.execute()...",
-          "🚨 ALERT [CRITICAL] CWE-89 at L3: Raw f-string passed directly to SQL executor.",
+          "[STAGE 2: AST AUDIT] ASTSecurityScanner auditing Call nodes on `db.execute()`...",
+          "🚨 ALERT [CRITICAL] CWE-89 at L3: Raw f-string passed directly to database driver.",
           "[STAGE 3: HERMETIC CI] Sandboxed CI runner confirming exploit payload...",
-          "[STAGE 4: SURGICAL HEALING] Formulating parameterized query binding...",
+          "[STAGE 4: SURGICAL HEALING] SentinelRemediator formulating parameterized query binding...",
           "🛠️  Replaced string formatting with safe SQL placeholder tuple `(account_id,)`.",
-          "[STAGE 5: RE-VERIFICATION] Running regression suite...",
-          "✅ 25/25 unit tests PASSED in 0.26s.",
-          "🎉 Vulnerability eliminated without human security review delay."
+          "[STAGE 5: RE-VERIFICATION] Running regression test matrix...",
+          "✅ 27/27 unit tests PASSED in 0.25s.",
+          "🎉 SQL Injection permanently eliminated without human triage delay."
         ]
       },
       cwe798: {
         title: "CWE-798 Hardcoded Credential",
-        before: "# VULNERABLE: High entropy production credential\nGITLAB_ADMIN_TOKEN = 'glpat-ProductionSecretAdminKey99887766'",
-        after: "import os\n# SECURED: Secret injected via GitLab CI/CD Variables\nGITLAB_ADMIN_TOKEN = os.getenv('GITLAB_ADMIN_TOKEN', '')",
+        before: "# CRITICAL RISK: High entropy production credential\nGITLAB_ADMIN_TOKEN = 'glpat-ProductionSecretAdminKey99887766'",
+        after: "import os\n# VERIFIED SAFE: Secret resolved via GitLab CI/CD Variables\nGITLAB_ADMIN_TOKEN = os.getenv('GITLAB_ADMIN_TOKEN', '')",
         logs: [
-          "[STAGE 1: POLICY] Entropy scanner analyzing constant variable assignments...",
+          "[STAGE 1: POLICY] Entropy analyzer scanning constant variable assignments...",
           "🚨 ALERT [HIGH] CWE-798: Detected high-entropy GitLab token `glpat-***` in source.",
-          "[STAGE 2: QUARANTINE] Immediate secret revocation recommendation triggered.",
+          "[STAGE 2: QUARANTINE] Immediate token revocation alert dispatched to Security Ops.",
           "[STAGE 3: SURGICAL HEALING] SentinelRemediator refactoring credential source...",
           "🛠️  Replaced literal string with `os.getenv('GITLAB_ADMIN_TOKEN', '')`.",
           "[STAGE 4: RE-VERIFICATION] Checking environment fallback compatibility...",
-          "✅ 25/25 unit tests PASSED.",
+          "✅ 27/27 unit tests PASSED.",
           "🎉 Secret quarantined and zero credentials exposed in git commit history."
         ]
       },
       cwe94: {
         title: "CWE-94 Code Injection",
-        before: "def evaluate_rule(rule_expr):\n    # VULNERABLE: Dynamic eval of untrusted expression\n    return eval(rule_expr)",
-        after: "import ast\n\ndef evaluate_rule(rule_expr):\n    # SECURED: Safe AST literal evaluation\n    return ast.literal_eval(rule_expr)",
+        before: "def evaluate_rule(rule_expr):\n    # CRITICAL VULNERABILITY: Dynamic eval of untrusted expression\n    return eval(rule_expr)",
+        after: "import ast\n\ndef evaluate_rule(rule_expr):\n    # VERIFIED SAFE: Safe AST literal evaluation\n    return ast.literal_eval(rule_expr)",
         logs: [
           "[STAGE 1: POLICY] Scanning dynamic evaluation points...",
           "[STAGE 2: AST AUDIT] ASTSecurityScanner detecting dangerous builtin `eval()` call...",
@@ -689,14 +897,14 @@
           "[STAGE 3: SURGICAL HEALING] Injecting ast.literal_eval wrapper...",
           "🛠️  Replaced `eval()` with `ast.literal_eval()` ensuring safe evaluation.",
           "[STAGE 4: RE-VERIFICATION] Running hermetic test sandbox...",
-          "✅ 25/25 unit tests PASSED in 0.31s.",
+          "✅ 27/27 unit tests PASSED in 0.26s.",
           "🎉 Remote code execution vulnerability permanently neutralized."
         ]
       },
       flaky: {
         title: "Flaky Test Quarantine & Stabilization",
         before: "def test_async_webhook_delivery():\n    # FLAKY: Unbounded await causing intermittent timeout\n    response = await client.post('/webhook')\n    assert response.status_code == 200",
-        after: "@pytest.mark.quarantine(reason='auto_quarantined_by_sentinel')\ndef test_async_webhook_delivery():\n    # FLAKY: Quarantined to unblock main PR branch\n    response = await client.post('/webhook')\n    assert response.status_code == 200",
+        after: "@pytest.mark.quarantine(reason='auto_quarantined_by_sentinel')\ndef test_async_webhook_delivery():\n    # ISOLATED: Quarantined to unblock main PR branch\n    response = await client.post('/webhook')\n    assert response.status_code == 200",
         logs: [
           "[STAGE 1: MONITOR] Analyzing historical test execution telemetry...",
           "⚡ DETECTED: `test_async_webhook_delivery` failed with `asyncio.TimeoutError`.",
@@ -728,51 +936,55 @@
       }
     };
 
-    let activeScenario = 'cwe78';
+    let curScenario = 'cwe78';
 
-    function selectScenario(id) {
-      activeScenario = id;
-      document.querySelectorAll('.scenario-btn').forEach(b => {
-        b.classList.remove('active');
-        if (b.getAttribute('onclick') && b.getAttribute('onclick').includes(id)) {
-          b.classList.add('active');
-        }
-      });
-    }
+    function setScenario(id) {
+      curScenario = id;
+      document.querySelectorAll('.tactile-btn').forEach(b => b.classList.remove('active'));
+      const activeBtn = document.getElementById(`btn-${id}`);
+      if (activeBtn) activeBtn.classList.add('active');
 
-
-    function runAutonomousLoop() {
-      const scen = scenarios[activeScenario];
-      const term = document.getElementById('terminalOutput');
-      const diffSec = document.getElementById('diffSection');
-      
-      term.innerText = "";
-      diffSec.style.display = 'block';
+      const scen = scenarios[id];
       document.getElementById('codeBefore').innerText = scen.before;
       document.getElementById('codeAfter').innerText = scen.after;
+    }
+
+    function switchTab(name) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+      const activeBtn = document.getElementById(`tabNav-${name}`);
+      const activeTab = document.getElementById(`tab-${name}`);
+      if (activeBtn) activeBtn.classList.add('active');
+      if (activeTab) activeTab.classList.add('active');
+    }
+
+    function runSimulation() {
+      switchTab('terminal');
+      const scen = scenarios[curScenario];
+      const term = document.getElementById('termOutput');
+      const termStatus = document.getElementById('terminalStatus');
+
+      term.innerText = "";
+      termStatus.innerText = `gitlab-ci: sentinel_closed_loop #${Math.floor(Math.random() * 800000 + 100000)} [RUNNING]`;
 
       let i = 0;
       const interval = setInterval(() => {
         if (i < scen.logs.length) {
           term.innerText += scen.logs[i] + "\n";
           term.scrollTop = term.scrollHeight;
-
-          // Highlight stage
-          const stageIdx = (i % 6) + 1;
-          document.querySelectorAll('.stage-item').forEach(s => s.classList.remove('active'));
-          const curStage = document.getElementById(`stage-${stageIdx}`);
-          if (curStage) curStage.classList.add('active');
-
           i++;
         } else {
           clearInterval(interval);
+          termStatus.innerText = `gitlab-ci: sentinel_closed_loop [PASSED 100% GREEN]`;
         }
-      }, 140);
+      }, 120);
     }
 
-    const mcpResponses = {
-      scan: {
-        tool: "sentinel_scan_code",
+    const mcpData = {
+      sentinel_scan_code: {
+        jsonrpc: "2.0",
+        id: 1,
         result: {
           count: 1,
           findings: [
@@ -785,15 +997,17 @@
           ]
         }
       },
-      remediate: {
-        tool: "sentinel_remediate_finding",
+      sentinel_remediate_finding: {
+        jsonrpc: "2.0",
+        id: 2,
         result: {
           success: true,
           remediated_code: "import subprocess\nsubprocess.run(['tar', '-czf', 'backup.tar.gz', target_dir], shell=False, check=True)"
         }
       },
-      greenops: {
-        tool: "sentinel_calculate_greenops",
+      sentinel_calculate_greenops: {
+        jsonrpc: "2.0",
+        id: 3,
         result: {
           action: "AUTO_CANCEL_AND_SKIP",
           cpu_minutes_saved: 45.5,
@@ -802,8 +1016,9 @@
           stages_skipped: ["docker-build", "sast-deep-scan", "e2e-integration-matrix"]
         }
       },
-      flaky: {
-        tool: "sentinel_quarantine_flaky_test",
+      sentinel_quarantine_flaky_test: {
+        jsonrpc: "2.0",
+        id: 4,
         result: {
           success: true,
           patched_content: "@pytest.mark.quarantine(reason='auto_quarantined_by_sentinel')\ndef test_async_webhook_delivery():\n    pass"
@@ -811,18 +1026,90 @@
       }
     };
 
-    function updateMcpDemo() {
-      const sel = document.getElementById('mcpSelect').value;
-      const data = mcpResponses[sel];
-      document.getElementById('mcpOutput').innerText = JSON.stringify(data, null, 2);
+    function callMcp(toolName) {
+      document.querySelectorAll('.mcp-tool-btn').forEach(b => b.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+      document.getElementById('mcpResponseArea').innerText = JSON.stringify(mcpData[toolName], null, 2);
     }
 
-    function executeMcpCall() {
-      updateMcpDemo();
+    const sarifExample = {
+      "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
+      "version": "2.1.0",
+      "runs": [{
+        "tool": {
+          "driver": {
+            "name": "GitLab Sentinel Enterprise",
+            "version": "1.2.0",
+            "rules": [
+              {
+                "id": "CWE-78",
+                "name": "OS Command Injection",
+                "shortDescription": {"text": "Unsanitized user payload passed directly to shell."},
+                "help": {"text": "Use subprocess.run(shell=False)"}
+              }
+            ]
+          }
+        },
+        "results": [{
+          "ruleId": "CWE-78",
+          "level": "error",
+          "message": {"text": "os.system() call vulnerable to command injection."},
+          "locations": [{
+            "physicalLocation": {
+              "artifactLocation": {"uri": "src/backup.py"},
+              "region": {"startLine": 4}
+            }
+          }]
+        }]
+      }]
+    };
+
+    const codeQualityExample = [
+      {
+        "description": "[CWE-78] OS command injection via os.system() - Fix: Use subprocess.run(shell=False)",
+        "check_name": "CWE-78",
+        "fingerprint": "CWE-78:4:9920148",
+        "severity": "blocker",
+        "location": {
+          "path": "src/backup.py",
+          "lines": { "begin": 4 }
+        }
+      }
+    ];
+
+    function setComplianceFormat(format) {
+      if (format === 'sarif') {
+        document.getElementById('btnFormatSarif').classList.add('active');
+        document.getElementById('btnFormatCQ').classList.remove('active');
+        document.getElementById('complianceArea').innerText = JSON.stringify(sarifExample, null, 2);
+      } else {
+        document.getElementById('btnFormatCQ').classList.add('active');
+        document.getElementById('btnFormatSarif').classList.remove('active');
+        document.getElementById('complianceArea').innerText = JSON.stringify(codeQualityExample, null, 2);
+      }
     }
 
-    // Initialize MCP box
-    updateMcpDemo();
+    function updateCalculator() {
+      const runs = parseInt(document.getElementById('sliderCommits').value);
+      const duration = parseInt(document.getElementById('sliderDuration').value);
+      
+      document.getElementById('sliderCommitsVal').innerText = `${runs} runs`;
+      document.getElementById('sliderDurationVal').innerText = `${duration} minutes`;
+
+      const totalMinutes = runs * duration;
+      const dollars = totalMinutes * 0.016;
+      const hours = totalMinutes / 60.0;
+      const carbon = (hours * 2.0 * 0.04) * 0.385;
+
+      document.getElementById('calcDollars').innerText = `$${dollars.toFixed(2)}`;
+      document.getElementById('calcHours').innerText = `${hours.toFixed(1)} hrs`;
+      document.getElementById('calcCarbon').innerText = `${carbon.toFixed(2)} kg`;
+    }
+
+    // Init defaults
+    setScenario('cwe78');
+    setComplianceFormat('sarif');
+    callMcp('sentinel_scan_code');
   </script>
 </body>
 </html>

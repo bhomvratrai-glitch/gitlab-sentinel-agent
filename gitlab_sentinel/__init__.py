@@ -9,8 +9,9 @@ from .gitlab_client import GitLabClient
 from .greenops import GreenOpsOptimizer, OptimizationResult
 from .flaky_detector import FlakyTestDetector, FlakyTestReport
 from .mcp_server import SentinelMCPServer
+from .orchestrator import SentinelOrchestrator, PipelineExecutionReport
 
-__version__ = "1.1.0"
+__version__ = "1.2.0"
 __all__ = [
     "ASTSecurityScanner",
     "VulnerabilityFinding",
@@ -22,6 +23,9 @@ __all__ = [
     "OptimizationResult",
     "FlakyTestDetector",
     "FlakyTestReport",
-    "SentinelMCPServer"
+    "SentinelMCPServer",
+    "SentinelOrchestrator",
+    "PipelineExecutionReport"
 ]
+
 
